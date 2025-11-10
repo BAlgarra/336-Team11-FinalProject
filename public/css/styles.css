@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+
+
+#banner{
+    height: 15vh;
+    background-image: url("/img/actionBackground.jpg");
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.bannerText{
+    font-family: 'Anton', sans-serif;
+    font-size: 6rem;
+    text-transform: uppercase;
+    color: #e10600;
+    text-shadow: 4px 4px 4px #ffffff;
+    letter-spacing: 2px;
+}

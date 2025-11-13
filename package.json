@@ -18,6 +18,7 @@
   "homepage": "https://github.com/BAlgarra/336-Team11-FinalProject#readme",
   "description": "",
   "dependencies": {
+    "bootstrap": "^5.3.8",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
     "mysql2": "^3.15.3"

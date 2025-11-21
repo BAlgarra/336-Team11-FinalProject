@@ -1,5 +1,6 @@
 import express from 'express';
 import mysql from 'mysql2/promise';
+// Comic Vine API Key for testing "76c424ab42c38f52084d995255a524f13416c44f"
 
 const app = express();
 
@@ -20,7 +21,8 @@ const pool = mysql.createPool({
 });
 
 //routes
-app.get('/', (req, res) => {
+app.get('/', (req, res) => {\
+    let sql = "SELECT * FROM user_account";
    res.render("home.ejs")
 });
 

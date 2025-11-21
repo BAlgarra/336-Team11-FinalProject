@@ -11,7 +11,17 @@
     <%- include('partials/header.ejs') %>
     <%- include('partials/navbar.ejs') %>
 
-    
+    <pre><%= JSON.stringify(data, null, 2) %></pre>
+
+      <% for (let i of data) { %>
+           Name: <%= i.name %>
+                <br>
+              <img 
+  src="<%= i.image.original_url %> "
+  style="width:300px; height:auto;"
+/>
+                <br><br>
+                <% } %>
     
 </body>
 </html>

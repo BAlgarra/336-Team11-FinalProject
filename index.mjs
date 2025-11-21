@@ -7,7 +7,7 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
 //for Express to get values using POST method
-app.use(express.urlencoded({extended:true}));
+app.use(express.urlencoded({ extended: true }));
 
 //setting up database connection pool
 const pool = mysql.createPool({
@@ -21,19 +21,37 @@ const pool = mysql.createPool({
 
 //routes
 app.get('/', (req, res) => {
-   res.render("home.ejs")
+    res.render("home.ejs")
 });
 
-app.get("/dbTest", async(req, res) => {
-   try {
+app.get("/dbTest", async (req, res) => {
+    try {
         const [rows] = await pool.query("SELECT CURDATE()");
         res.send(rows);
     } catch (err) {
         console.error("Database error:", err);
         res.status(500).send("Database error!");
     }
+
 });//dbTest
 
-app.listen(3000, ()=>{
+app.get("/apiTest", async (req, res) => {
+    const url = new URL("https://comicvine.gamespot.com/api/search/");
+    url.search = new URLSearchParams({
+        api_key: "76c424ab42c38f52084d995255a524f13416c44f",
+        format: "json",
+        query: "batman",
+        resources: "volume",
+        field_list: "name,id,image,site_detail_url",
+        limit: "5"
+    }).toString();
+
+    const response = await fetch(url, { headers: { "Accept": "application/json" } });
+    const data = await response.json();
+    console.log(data.results);
+    res.render("issues.ejs",{data: data.results});
+});
+
+app.listen(3000, () => {
     console.log("Express server running")
 })

@@ -21,6 +21,7 @@ const pool = mysql.createPool({
 
 //routes
 app.get("/", (req, res) => {
+  let sql = `SELECT * FROM comic`;
   res.render("home.ejs");
 });
 

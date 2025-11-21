@@ -2,7 +2,7 @@
 
 
 #banner{
-    height: 15vh;
+    height: 20vh;
     background-image: url("/img/actionBackground.jpg");
     background-position: center;
     display: flex;
@@ -19,3 +19,7 @@
     text-shadow: 4px 4px 4px #ffffff;
     letter-spacing: 2px;
 }
+ .custom-navbar {
+    padding-top: 0.1rem;   /* Reduce vertical padding */
+    padding-bottom: 0.1rem;
+  }

@@ -54,14 +54,15 @@ app.get("/apiTest", async (req, res) => {
     res.render("issues.ejs",{data: data.results});
 });
 
+const numIssues = 36;
 app.get("/browse", async (req, res) => {
   let pageNum = 0;
   let offset = 0;
   if (req.query.page) {
     pageNum = req.query.page;
-    offset = pageNum * ISSUES_PER_PAGE;
+    offset = pageNum * numIssues;
   }
-  const rawData = await fetch(`https://comicvine.gamespot.com/api/issues/?api_key=${api_key}&format=json&sort=store_date:desc&limit=${ISSUES_PER_PAGE}&offset=${offset}`);
+  const rawData = await fetch(`https://comicvine.gamespot.com/api/issues/?api_key=${api_key}&format=json&sort=store_date:desc&limit=${numIssues}&offset=${offset}`);
   const data = await rawData.json();
   const issueData = data.results;
   const hasPrevPage = pageNum != 0;

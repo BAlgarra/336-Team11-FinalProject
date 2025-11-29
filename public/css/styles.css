@@ -19,3 +19,9 @@
     text-shadow: 4px 4px 4px #ffffff;
     letter-spacing: 2px;
 }
+
+.comics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+}

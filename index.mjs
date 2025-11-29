@@ -2,6 +2,7 @@ import express from "express";
 import mysql from "mysql2/promise"; // This is a test
 
 const app = express();
+const api_key = "76c424ab42c38f52084d995255a524f13416c44f";
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
@@ -52,6 +53,15 @@ app.get("/apiTest", async (req, res) => {
     console.log(data.results);
     res.render("issues.ejs",{data: data.results});
 });
+
+const numIssues = 20;   //  20 issues per page
+let offset = 0; //  needed to for paging
+app.get("/browse", async (req, res) => {
+    const rawData = await fetch(`https://comicvine.gamespot.com/api/issues/?api_key=${api_key}format=json&sort=store_date:desc&limit=${numIssues}offset=${offset}`);
+    const cookedData = await rawData.json();
+    const issueData = cookedData.results;
+    res.render("browse.ejs", {issueData});
+})
 
 app.listen(3000, () => {
     console.log("Express server running")

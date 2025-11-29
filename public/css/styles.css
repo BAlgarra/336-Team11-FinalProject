@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
 
 
-#banner{
+#banner {
     height: 15vh;
     background-image: url("/img/actionBackground.jpg");
     background-position: center;
@@ -11,7 +11,7 @@
     text-align: center;
 }
 
-.bannerText{
+.bannerText {
     font-family: 'Anton', sans-serif;
     font-size: 6rem;
     text-transform: uppercase;
@@ -21,7 +21,18 @@
 }
 
 .comics-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+}
+
+.comic-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.comic-item img {
+    height: 250px;
+    width: 150px;
 }

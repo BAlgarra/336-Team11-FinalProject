@@ -18,11 +18,13 @@
     <% for (let i = 0; i < issueData.length; i++) { %>
       <div class="comic-item">
         <img src="<%= issueData[i].image.medium_url %>"%>">
-        <p><%= issueData[i].name %></p>
+        <p><%= issueData[i].name || `Issue #${issueData[i].issue_number}` %></p>
       </div>
     <% } %>
   </div>
-
-
+  <div>
+    <button></button>
+    <button></button>
+  </div>
 </body>
 </html>

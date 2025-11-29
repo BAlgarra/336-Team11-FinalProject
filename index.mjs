@@ -54,14 +54,13 @@ app.get("/apiTest", async (req, res) => {
     res.render("issues.ejs",{data: data.results});
 });
 
-const numIssues = 20;   //  20 issues per page
+const numIssues = 24;   //  24 issues per page
 let offset = 0; //  needed to for paging
 app.get("/browse", async (req, res) => {
     const rawData = await fetch(`https://comicvine.gamespot.com/api/issues/?api_key=${api_key}&format=json&sort=store_date:desc&limit=${numIssues}&offset=${offset}`);
     const cookedData = await rawData.json();
     const issueData = cookedData.results;
     offset += numIssues;    //  increment the offset by the page size
-    // console.log(issueData);
     res.render("browse.ejs", { issueData });
 })
 

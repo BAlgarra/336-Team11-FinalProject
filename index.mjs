@@ -54,15 +54,23 @@ app.get("/apiTest", async (req, res) => {
     res.render("issues.ejs",{data: data.results});
 });
 
-const numIssues = 24;   //  24 issues per page
-let offset = 0; //  needed to for paging
 app.get("/browse", async (req, res) => {
-    const rawData = await fetch(`https://comicvine.gamespot.com/api/issues/?api_key=${api_key}&format=json&sort=store_date:desc&limit=${numIssues}&offset=${offset}`);
-    const cookedData = await rawData.json();
-    const issueData = cookedData.results;
-    offset += numIssues;    //  increment the offset by the page size
-    res.render("browse.ejs", { issueData });
-})
+  let pageNum = 0;
+  let offset = 0;
+  if (req.query.page) {
+    pageNum = req.query.page;
+    offset = pageNum * ISSUES_PER_PAGE;
+  }
+  const rawData = await fetch(`https://comicvine.gamespot.com/api/issues/?api_key=${api_key}&format=json&sort=store_date:desc&limit=${ISSUES_PER_PAGE}&offset=${offset}`);
+  const data = await rawData.json();
+  const issueData = data.results;
+  const hasPrevPage = pageNum != 0;
+  res.render("browse.ejs", {
+    issueData,
+    pageNum,
+    hasPrevPage
+  });
+});
 
 app.listen(3000, () => {
     console.log("Express server running")

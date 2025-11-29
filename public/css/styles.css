@@ -36,3 +36,33 @@
     height: 250px;
     width: 150px;
 }
+
+.browseBody {
+    background-color: lightgray;
+}
+
+.nextPagePrevPage {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.nextButton {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 10px;
+    padding-left: 10px;
+    background-color: blue;
+    border: solid 1px black;
+    color: white;
+}
+
+.prevButton {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 10px;
+    padding-left: 10px;
+    background-color: white;
+    border: solid 1px black;
+    color: black;
+}

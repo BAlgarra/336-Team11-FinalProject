@@ -11,20 +11,22 @@
     crossorigin="anonymous"></script>
   <link href="/css/styles.css" rel="stylesheet">
 </head>
-<body>
-  <%- include('partials/header.ejs') %>
-  <%- include('partials/navbar.ejs') %>
-  <div class="comics-grid">
-    <% for (let i = 0; i < issueData.length; i++) { %>
-      <div class="comic-item">
-        <img src="<%= issueData[i].image.medium_url %>"%>">
-        <p><%= issueData[i].name || `Issue #${issueData[i].issue_number}` %></p>
-      </div>
-    <% } %>
-  </div>
-  <div>
-    <button></button>
-    <button></button>
-  </div>
-</body>
+  <body class="browseBody">
+    <%- include('partials/header.ejs') %>
+    <%- include('partials/navbar.ejs') %>
+    <div class="comics-grid">
+      <% for (let i = 0; i < issueData.length; i++) { %>
+        <div class="comic-item">
+          <img src="<%= issueData[i].image.medium_url %>"%>">
+          <p><%= issueData[i].name || `Issue #${issueData[i].issue_number}` %></p>
+        </div>
+      <% } %>
+    </div>
+    <div class="nextPagePrevPage">
+      <% if (pageNum > 0) { %>
+        <a class="prevButton" href="/browse?page=<%= pageNum - 1 %>">Previous</a>
+      <% } %>
+      <a class="nextButton" href="/browse?page=<%= Number(pageNum) + 1 %>">Next</a>
+    </div>
+  </body>
 </html>

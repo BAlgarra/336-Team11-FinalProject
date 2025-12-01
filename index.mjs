@@ -2,6 +2,7 @@ import express from "express";
 import mysql from "mysql2/promise"; // This is a test
 
 const app = express();
+const api_key = "76c424ab42c38f52084d995255a524f13416c44f";
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
@@ -51,6 +52,25 @@ app.get("/apiTest", async (req, res) => {
     const data = await response.json();
     console.log(data.results);
     res.render("issues.ejs",{data: data.results});
+});
+
+const numIssues = 36;
+app.get("/browse", async (req, res) => {
+  let pageNum = 0;
+  let offset = 0;
+  if (req.query.page) {
+    pageNum = req.query.page;
+    offset = pageNum * numIssues;
+  }
+  const rawData = await fetch(`https://comicvine.gamespot.com/api/issues/?api_key=${api_key}&format=json&sort=store_date:desc&limit=${numIssues}&offset=${offset}`);
+  const data = await rawData.json();
+  const issueData = data.results;
+  const hasPrevPage = pageNum != 0;
+  res.render("browse.ejs", {
+    issueData,
+    pageNum,
+    hasPrevPage
+  });
 });
 
 app.listen(3000, () => {

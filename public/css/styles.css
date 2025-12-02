@@ -73,3 +73,56 @@
     border: solid 1px black;
     color: black;
 }
+
+
+.modal-content {
+    resize: both !important;
+    overflow: auto !important;
+    min-width: 300px;
+    min-height: 200px;
+    max-width: 90vw;
+    max-height: 90vh;
+  }
+  
+  .card {
+    width: 220px;
+    margin: auto;
+}
+
+.card img {
+    width: 100%;
+    height: auto;         /* allow the image to define its true height */
+    object-fit: contain;  /* keeps the ENTIRE image visible */
+    display: block;
+    background-color: white;
+    padding: 5px;
+}
+
+
+  
+.card-body {
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+  }
+  
+  .card-title,
+  /* I looked this one up as a solution to titlese overflowing out of card */
+  .card-text {
+    word-wrap: break-word;     /* breaks long words */
+    overflow-wrap: break-word; /* safer across browsers */
+    white-space: normal;       /* ensures wrapping */
+  }
+  
+  .card-title {
+    font-size: 1rem; 
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+  
+  .card-text {
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
+  

@@ -22,38 +22,39 @@ const pool = mysql.createPool({
 });
 
 // -------- Home & dbTest routes ----------------------------------------
-app.get('/', (req, res) => {
-    res.render("home.ejs")
+app.get("/", (req, res) => {
+  res.render("home.ejs");
 });
 
 app.get("/dbTest", async (req, res) => {
-    try {
-        const [rows] = await pool.query("SELECT CURDATE()");
-        res.send(rows);
-    } catch (err) {
-        console.error("Database error:", err);
-        res.status(500).send("Database error!");
-    }
-
+  try {
+    const [rows] = await pool.query("SELECT CURDATE()");
+    res.send(rows);
+  } catch (err) {
+    console.error("Database error:", err);
+    res.status(500).send("Database error!");
+  }
 });
 
 // -------- Comicvine API Tests  ------------------------------------
 
 app.get("/apiTest", async (req, res) => {
-    const url = new URL("https://comicvine.gamespot.com/api/search/");
-    url.search = new URLSearchParams({
-        api_key: "76c424ab42c38f52084d995255a524f13416c44f",
-        format: "json",
-        query: "batman",
-        resources: "volume",
-        field_list: "name,id,image,site_detail_url",
-        limit: "5"
-    }).toString();
+  const url = new URL("https://comicvine.gamespot.com/api/search/");
+  url.search = new URLSearchParams({
+    api_key: "76c424ab42c38f52084d995255a524f13416c44f",
+    format: "json",
+    query: "batman",
+    resources: "volume",
+    field_list: "name,id,image,site_detail_url",
+    limit: "5",
+  }).toString();
 
-    const response = await fetch(url, { headers: { "Accept": "application/json" } });
-    const data = await response.json();
-    console.log(data.results);
-    res.render("issues.ejs",{data: data.results});
+  const response = await fetch(url, {
+    headers: { Accept: "application/json" },
+  });
+  const data = await response.json();
+  console.log(data.results);
+  res.render("issues.ejs", { data: data.results });
 });
 
 app.get("/testIssue/:comicvine_id", async (req, res) => {
@@ -66,17 +67,13 @@ app.get("/testIssue/:comicvine_id", async (req, res) => {
 
     console.log(data.results);
     res.json(data.results);
-
   } catch (err) {
     console.error("ComicVine API error:", err);
     res.status(500).send("Error fetching issue");
   }
 });
 
-
-
 // -------- Comicvine API Tests END  ------------------------------------
-
 
 const numIssues = 36;
 
@@ -87,16 +84,29 @@ app.get("/browse", async (req, res) => {
     pageNum = req.query.page;
     offset = pageNum * numIssues;
   }
-  const rawData = await fetch(`https://comicvine.gamespot.com/api/issues/?api_key=${api_key}&format=json&sort=store_date:desc&limit=${numIssues}&offset=${offset}`);
+  const rawData = await fetch(
+    `https://comicvine.gamespot.com/api/issues/?api_key=${api_key}&format=json&sort=store_date:desc&limit=${numIssues}&offset=${offset}`
+  );
   const data = await rawData.json();
   const issueData = data.results;
 
-  console.log(issueData)
+  // TEMP user_id
+  const user_id = 1;
+
+  // Fetch collections for dropdown
+  const [collections] = await pool.query(
+    "SELECT * FROM collection WHERE user_id = ?",
+    [user_id]
+  );
+
+  console.log(issueData);
   const hasPrevPage = pageNum != 0;
   res.render("browse.ejs", {
     issueData,
     pageNum,
-    hasPrevPage
+    hasPrevPage,
+    collections,
+    user_id,
   });
 });
 
@@ -119,16 +129,10 @@ app.post("/newCollection", async (req, res) => {
 
   await pool.query(sql, [name, description, user_id]);
 
-  // redirect home until collections display page is made
-
-  res.redirect("/");
-
-  // route not made yet
-  // res.redirect("/collections");
+  res.redirect("/collections");
 });
 
 app.post("/addComicToCollection", async (req, res) => {
-
   // until we can login the button will manually add collections to userId 1 and collection 1
   const { comicvine_id, collection_id } = req.body;
 
@@ -172,7 +176,7 @@ app.post("/addComicToCollection", async (req, res) => {
     issue.image?.thumb_url || null,
     issue.description || null,
     issue.site_detail_url || null,
-    issue.api_detail_url || null
+    issue.api_detail_url || null,
   ]);
 
   // 3. Get local comic_id
@@ -182,7 +186,7 @@ app.post("/addComicToCollection", async (req, res) => {
   );
   const comic_id = rows[0].comic_id;
 
-  // 4. Insert into join table 
+  // 4. Insert into join table
   const insertJoinSQL = `
       INSERT IGNORE INTO collection_comic (collection_id, comic_id)
       VALUES (?, ?)
@@ -190,9 +194,8 @@ app.post("/addComicToCollection", async (req, res) => {
 
   await pool.query(insertJoinSQL, [collection_id, comic_id]);
 
-  // 5. Redirect back to collection page when created 
-  res.redirect('/browse');
-
+  // 5. Redirect back to collection page when created
+  res.redirect("/browse");
 });
 
 app.get("/collections", async (req, res) => {
@@ -213,7 +216,6 @@ app.post("/collection/select", (req, res) => {
   res.redirect(`/collection/${collection_id}`);
 });
 
-
 app.get("/collection/:id", async (req, res) => {
   const collection_id = req.params.id;
 
@@ -230,9 +232,6 @@ app.get("/collection/:id", async (req, res) => {
   res.render("collectionView.ejs", { comics });
 });
 
-
-
-
 app.listen(3000, () => {
-    console.log("Express server running")
-})
+  console.log("Express server running");
+});

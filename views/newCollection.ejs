@@ -4,33 +4,68 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Create Collection</title>
+
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
       rel="stylesheet"
-      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
-      crossorigin="anonymous"
     />
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-      crossorigin="anonymous"
-    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <link href="/css/styles.css" rel="stylesheet" />
   </head>
 
-  <%- include("partials/header") %> <%- include("partials/navbar") %>
+  <body>
+    <%- include("partials/header") %>
+    <%- include("partials/navbar") %>
 
-  <h1>Create a New Collection</h1>
+    <div class="container mt-5" style="max-width: 700px;">
 
-  <form action="/newCollection" method="POST">
-    <input type="hidden" name="user_id" value="<%= user_id %>" />
+      <!-- Page Heading -->
+      <h2 class="mb-4">Create a New Collection</h2>
 
-    <label>Collection Name:</label>
-    <input type="text" name="name" required />
+      <!-- Create Collection Form -->
+      <form action="/newCollection" method="POST" class="mb-4">
 
-    <label>Description:</label>
-    <textarea name="description"></textarea>
+        <input type="hidden" name="user_id" value="<%= user_id %>" />
 
-    <button type="submit">Create Collection</button>
-  </form>
+        <!-- Collection Name -->
+        <div class="mb-3">
+          <label class="form-label"><strong>Collection Name</strong></label>
+          <input
+            type="text"
+            name="name"
+            class="form-control form-control-lg"
+            placeholder="Enter collection name"
+            required
+          />
+        </div>
+
+        <!-- Description -->
+        <div class="mb-3">
+          <label class="form-label"><strong>Description</strong></label>
+          <textarea
+            name="description"
+            class="form-control"
+            rows="4"
+            placeholder="Describe your collection (optional)"
+          ></textarea>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-success w-100 py-2">
+          Create Collection
+        </button>
+      </form>
+
+      <!-- Return to Collections -->
+      <hr class="my-4" />
+
+      <form action="/collections" method="GET">
+        <button type="submit" class="btn btn-primary w-100 py-2">
+          Back to Collections
+        </button>
+      </form>
+
+    </div>
+
+  </body>
 </html>

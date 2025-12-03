@@ -3,51 +3,66 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Browse Issues</title>
+    <title>Select Collection</title>
+
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
       rel="stylesheet"
-      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
-      crossorigin="anonymous"
     />
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-      crossorigin="anonymous"
-    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <link href="/css/styles.css" rel="stylesheet" />
   </head>
+
   <body>
-    <%- include('partials/header.ejs') %> <%- include('partials/navbar.ejs') %>
 
-    <div class="container mt-4">
-      <h2>Select a Collection</h2>
+    <%- include('partials/header.ejs') %>
+    <%- include('partials/navbar.ejs') %>
 
-      <form action="/collection/select" method="POST" class="mt-4">
-        <div class="form-group">
-          <label for="collectionSelect"
-            ><strong>Choose a collection:</strong></label
-          >
+    <div class="container mt-5">
 
-          <select
-            id="collectionSelect"
-            name="collection_id"
-            class="form-control"
-            required
-          >
-            <option value="">-- Select a Collection --</option>
+      <!-- Page Heading -->
+      <h2 class="mb-4">Select a Collection</h2>
 
-            <% collections.forEach(col => { %>
+      <!-- Select Collection Form -->
+      <form action="/collection/select" method="POST" class="mb-5">
+
+        <label for="collectionSelect" class="form-label">
+          <strong>Choose one of your collections:</strong>
+        </label>
+
+        <select
+          id="collectionSelect"
+          name="collection_id"
+          class="form-select form-select-lg mb-3"
+          required
+        >
+          <option value="">-- Select a Collection --</option>
+
+          <% collections.forEach(col => { %>
             <option value="<%= col.collection_id %>"><%= col.name %></option>
-            <% }) %>
-          </select>
-        </div>
+          <% }) %>
+        </select>
 
-        <button type="submit" class="btn btn-primary mt-3">
+        <button type="submit" class="btn btn-primary w-100">
           View Collection
         </button>
       </form>
+
+      <!-- Divider -->
+      <hr class="my-4">
+
+      <!-- Create New Collection Button -->
+      <h4>Create a New Collection</h4>
+      <p>You can create a custom collection to organize your comics.</p>
+
+      <form action="/newCollection" method="GET">
+        <button type="submit" class="btn btn-success w-100">
+          Create New Collection
+        </button>
+      </form>
+
     </div>
 
   </body>
 </html>
+

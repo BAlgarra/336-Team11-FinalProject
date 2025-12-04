@@ -22,37 +22,41 @@
     </div>
 
     <form action="/updateUsername" method="POST" class="profileUpdateForm">
-      <input type="hidden" name="newUsername" value="<%= userInfo.user_name %>">
+      <input type="text" name="newUsername" value="<%= userInfo.user_name %>">
       <button>update</button>
     </form>
 
     <form action="/updateEmail" method="POST" class="profileUpdateForm">
-      <input type="hidden" name="newEmail" value="<%= userInfo.email %>">
+      <input type="text" name="newEmail" value="<%= userInfo.email %>">
       <button>update</button>
     </form>
 
     <form action="/updatePassword" method="POST" class="profileUpdateForm">
-      <input type="hidden" name="newPassword" value="<%= userInfo.password %>">
+      <input type="text" name="newPassword" value="<%= userInfo.password %>">
       <button>update</button>
     </form>
 
     <form action="/updateFirstName" method="POST" class="profileUpdateForm">
-      <input type="hidden" name="newFirstName" value="<%= userInfo.firstName %>">
+      <input type="text" name="newFirstName" value="<%= userInfo.firstName %>">
       <button>update</button>
     </form>
 
     <form action="/updateLastName" method="POST" class="profileUpdateForm">
-      <input type="hidden" name="newLastName" value="<%= userInfo.lastName %>">
+      <input type="text" name="newLastName" value="<%= userInfo.lastName %>">
       <button>update</button>
     </form>
 
     <form action="/updatePfp" method="POST" class="profileUpdateForm">
-      <input type="hidden" name="newPfpUrl" value="<%= userInfo.pfp_url %>">
+      <input type="text" name="newPfpUrl" value="<%= userInfo.pfp_url %>">
       <button>update</button>
     </form>
 
     <form action="/updateSex" method="POST" class="profileUpdateForm">
-
+      Sex:
+      <select name="sex">
+        <option <%= (userInfo.sex == 'M') ? "selected" : "" %> value="M">Male</option>
+        <option <%= (userInfo.sex == 'F') ? "selected" : "" %> value="F">Female</option>
+      </select>
       <button>update</button>
     </form>
 

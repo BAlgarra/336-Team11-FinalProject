@@ -21,6 +21,43 @@ const pool = mysql.createPool({
   waitForConnections: true,
 });
 
+//  ------------------- Profile routs ----------------------------------
+app.get("/profile", async (req, res) => {
+  const userId = 1; //  for pre-auth development will change
+  let sql = "SELECT * FROM user_account";
+  const [rows] = await pool.query(sql);
+  const userInfo = rows[0];
+  res.render("profile.ejs", userInfo);
+});
+
+app.post("/updateUsername", async (req, res) =>{
+  //  TODO
+});
+
+app.post("/updateEmail", async (req, res) => {
+  //  TODO
+});
+
+app.post("/updatePassword", async (req, res) {
+  //  TODO
+});
+
+app.post("/updateFirstName", async (req, res) =>{
+  //  TODO
+});
+
+app.post("/updateLastName", async (req, res) => {
+  //  TODO
+});
+
+app.post("/updatePfp", async (req, res) => {
+  //  TODO
+});
+
+app.post("/updateSex", async (req, res)  => {
+  //  TODO
+});
+
 // -------- Home & dbTest routes ----------------------------------------
 app.get("/", (req, res) => {
   res.render("home.ejs");

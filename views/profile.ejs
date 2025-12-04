@@ -15,51 +15,36 @@
   <%- include('partials/navbar.ejs') %>
 
   <div class="profileCard">
-
-    <div class="welcomeMessage">
-      <h1>Hello <%= userInfo.user_name %></h1>
-      <img src="<%= userInfo.pfp_url %>">
-    </div>
-
-    <form action="/updateUsername" method="POST" class="profileUpdateForm">
+    <form action="/updateProfile" method="POST" class="profileUpdateForm">
+      <div class="welcomeMessage">
+        <h4>Hello <%= userInfo.user_name %></h4>
+        <img src="<%= userInfo.pfp_url %>">
+      </div>
+      <p>Username</p>
       <input type="text" name="newUsername" value="<%= userInfo.user_name %>">
-      <button>update</button>
-    </form>
-
-    <form action="/updateEmail" method="POST" class="profileUpdateForm">
+      <p>Email</p>
       <input type="text" name="newEmail" value="<%= userInfo.email %>">
-      <button>update</button>
-    </form>
-
-    <form action="/updatePassword" method="POST" class="profileUpdateForm">
+      <p>Password</p>
       <input type="text" name="newPassword" value="<%= userInfo.password %>">
-      <button>update</button>
-    </form>
-
-    <form action="/updateFirstName" method="POST" class="profileUpdateForm">
+      <p>First Name</p>
       <input type="text" name="newFirstName" value="<%= userInfo.firstName %>">
-      <button>update</button>
-    </form>
-
-    <form action="/updateLastName" method="POST" class="profileUpdateForm">
+      <p>Last Name</p>
       <input type="text" name="newLastName" value="<%= userInfo.lastName %>">
-      <button>update</button>
-    </form>
-
-    <form action="/updatePfp" method="POST" class="profileUpdateForm">
+      <p>Profile Picture Url</p>
       <input type="text" name="newPfpUrl" value="<%= userInfo.pfp_url %>">
+      <p>Sex</p>
+      <div class="flexCol">
+        <label>
+          <input type="radio" name="sex" value="M" <%= userInfo.sex === 'm' ? "checked" : "" %>>
+          Male
+        </label>
+        <label>
+          <input type="radio" name="sex" value="F" <%= userInfo.sex === 'f' ? "checked" : "" %>>
+          Female
+        </label>
+      </div>
       <button>update</button>
     </form>
-
-    <form action="/updateSex" method="POST" class="profileUpdateForm">
-      Sex:
-      <select name="sex">
-        <option <%= (userInfo.sex == 'M') ? "selected" : "" %> value="M">Male</option>
-        <option <%= (userInfo.sex == 'F') ? "selected" : "" %> value="F">Female</option>
-      </select>
-      <button>update</button>
-    </form>
-
   </div>
 
 </body>

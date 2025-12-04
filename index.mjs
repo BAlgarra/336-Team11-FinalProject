@@ -24,10 +24,10 @@ const pool = mysql.createPool({
 //  ------------------- Profile routs ----------------------------------
 app.get("/profile", async (req, res) => {
   const userId = 1; //  for pre-auth development will change
-  let sql = "SELECT * FROM user_account";
-  const [rows] = await pool.query(sql);
+  let sql = `SELECT * FROM user_account WHERE user_id = ?`;
+  const [rows] = await pool.query(sql, [userId]);
   const userInfo = rows[0];
-  res.render("profile.ejs", userInfo);
+  res.render("profile.ejs", { userInfo });
 });
 
 app.post("/updateUsername", async (req, res) =>{
@@ -38,7 +38,7 @@ app.post("/updateEmail", async (req, res) => {
   //  TODO
 });
 
-app.post("/updatePassword", async (req, res) {
+app.post("/updatePassword", async (req, res) => {
   //  TODO
 });
 

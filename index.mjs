@@ -31,6 +31,7 @@ app.get("/profile", async (req, res) => {
 });
 
 app.post("/updateProfile", async (req, res) => {
+  const userId = req.body.user_id;
   let newUsername = req.body.newUsername;
   let newEmail = req.body.newEmail;
   let newPassword = req.body.newPassword;
@@ -38,7 +39,10 @@ app.post("/updateProfile", async (req, res) => {
   let newLastName = req.body.newLastName;
   let newPfpUrl = req.body.newPfpUrl;
   let sex = req.body.sex;
-  //  TODO
+  let sql = "UPDATE user_account SET user_name = ?, email = ?, password = ?, firstName = ?, lastName = ?, pfp_url = ?, sex = ? WHERE user_id = ?";
+  let sqlParams = [newUsername, newEmail, newPassword, newFirstName, newLastName, newPfpUrl, sex, userId];
+  const [rows] = await pool.query(sql, sqlParams);
+  res.redirect("/profile");
 });
 
 // -------- Home & dbTest routes ----------------------------------------

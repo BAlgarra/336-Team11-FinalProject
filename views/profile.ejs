@@ -16,6 +16,7 @@
 
   <div class="profileCard">
     <form action="/updateProfile" method="POST" class="profileUpdateForm">
+      <input type="hidden" name="user_id" value="<%= userInfo.user_id %>">
       <div class="welcomeMessage">
         <h4>Hello <%= userInfo.user_name %></h4>
         <img src="<%= userInfo.pfp_url %>">

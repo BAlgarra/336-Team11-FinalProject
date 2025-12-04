@@ -30,31 +30,38 @@ app.get("/profile", async (req, res) => {
   res.render("profile.ejs", { userInfo });
 });
 
-app.post("/updateUsername", async (req, res) =>{
+app.post("/updateUsername", async (req, res) => {
+  let newUsername = req.body.newUsername;
   //  TODO
 });
 
 app.post("/updateEmail", async (req, res) => {
+  let newEmail = req.body.newEmail;
   //  TODO
 });
 
 app.post("/updatePassword", async (req, res) => {
+  let newPassword = req.body.newPassword;
   //  TODO
 });
 
-app.post("/updateFirstName", async (req, res) =>{
+app.post("/updateFirstName", async (req, res) => {
+  let newFirstName = req.body.newFirstName;
   //  TODO
 });
 
 app.post("/updateLastName", async (req, res) => {
+  let newLastName = req.body.newLastName;
   //  TODO
 });
 
 app.post("/updatePfp", async (req, res) => {
+  let newPfpUrl = req.body.newPfpUrl;
   //  TODO
 });
 
 app.post("/updateSex", async (req, res)  => {
+  let sex = req.body.sex;
   //  TODO
 });
 

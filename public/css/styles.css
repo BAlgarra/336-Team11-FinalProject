@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
 
 
-#banner{
+#banner {
     height: 15vh;
     background-image: url("/img/actionBackground.jpg");
     background-position: center;
@@ -11,7 +11,67 @@
     text-align: center;
 }
 
-.bannerText{
+.flexCol {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.profileCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: darkgray;
+}
+
+.profileUpdateForm input {
+    border-radius: 5px;
+}
+
+.profileUpdateForm {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 400px;
+    border: 2px solid black;
+    border-radius: 5px;
+    padding: 20px;
+    background-color: lightgray;
+    margin-bottom: 20px;
+}
+
+.profileUpdateForm p {
+    font-size: small;
+    margin-bottom: -9px;
+}
+
+.profileUpdateForm button {
+    background-color: blue;
+    color: white
+}
+
+.profileUpdateForm button:hover {
+    background-color: rgb(46, 186, 46);
+}
+
+.welcomeMessage {
+    display: flex;
+    flex-direction: row;
+    font-size: 10px;
+    justify-content: center;
+    align-items: center;
+    gap: 15px
+}
+
+.welcomeMessage img {
+    height: 50px;
+    width: 50px;
+    border: 1px solid black;
+    border-radius: 90px;
+}
+
+.bannerText {
     font-family: 'Anton', sans-serif;
     font-size: 6rem;
     text-transform: uppercase;
@@ -19,3 +79,110 @@
     text-shadow: 4px 4px 4px #ffffff;
     letter-spacing: 2px;
 }
+
+.comics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+}
+
+.comic-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.comic-item img {
+    height: 250px;
+    width: 150px;
+}
+
+.browseBody {
+    background-color: darkgray;
+}
+
+.nextPagePrevPage {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.nextPagePrevPage {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+.nextButton {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 10px;
+    padding-left: 10px;
+    background-color: blue;
+    border: solid 1px black;
+    color: white;
+}
+
+.prevButton {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 10px;
+    padding-left: 10px;
+    background-color: white;
+    border: solid 1px black;
+    color: black;
+}
+
+
+.modal-content {
+    resize: both !important;
+    overflow: auto !important;
+    min-width: 300px;
+    min-height: 200px;
+    max-width: 90vw;
+    max-height: 90vh;
+  }
+  
+  .card {
+    width: 220px;
+    margin: auto;
+}
+
+.card img {
+    width: 100%;
+    height: auto;         /* allow the image to define its true height */
+    object-fit: contain;  /* keeps the ENTIRE image visible */
+    display: block;
+    background-color: white;
+    padding: 5px;
+}
+
+
+  
+.card-body {
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+  }
+  
+  .card-title,
+  /* I looked this one up as a solution to titlese overflowing out of card */
+  .card-text {
+    word-wrap: break-word;     /* breaks long words */
+    overflow-wrap: break-word; /* safer across browsers */
+    white-space: normal;       /* ensures wrapping */
+  }
+  
+  .card-title {
+    font-size: 1rem; 
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+  
+  .card-text {
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
+  

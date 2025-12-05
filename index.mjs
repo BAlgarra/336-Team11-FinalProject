@@ -1,6 +1,7 @@
 import express from "express";
 import mysql from "mysql2/promise"; // This is a test
-
+import bcrypt from "bcrypt";
+import session from "express-session";
 const app = express();
 const api_key = "76c424ab42c38f52084d995255a524f13416c44f";
 
@@ -10,6 +11,14 @@ app.use(express.static("public"));
 //for Express to get values using POST method
 app.use(express.urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
+app.set("trust proxy", 1);
+app.use(
+  session({
+    secret: "keyboard cat",
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
 //setting up database connection pool
 const pool = mysql.createPool({
@@ -21,34 +30,112 @@ const pool = mysql.createPool({
   waitForConnections: true,
 });
 
-//  ------------------- Profile routs ----------------------------------
-app.get("/profile", async (req, res) => {
-  const userId = 1; //  for pre-auth development will change
-  let sql = `SELECT * FROM user_account WHERE user_id = ?`;
-  const [rows] = await pool.query(sql, [userId]);
-  const userInfo = rows[0];
-  res.render("profile.ejs", { userInfo });
-});
-
-app.post("/updateProfile", async (req, res) => {
-  const userId = req.body.user_id;
-  let newUsername = req.body.newUsername;
-  let newEmail = req.body.newEmail;
-  let newPassword = req.body.newPassword;
-  let newFirstName = req.body.newFirstName;
-  let newLastName = req.body.newLastName;
-  let newPfpUrl = req.body.newPfpUrl;
-  let sex = req.body.sex;
-  let sql = "UPDATE user_account SET user_name = ?, email = ?, password = ?, firstName = ?, lastName = ?, pfp_url = ?, sex = ? WHERE user_id = ?";
-  let sqlParams = [newUsername, newEmail, newPassword, newFirstName, newLastName, newPfpUrl, sex, userId];
-  const [rows] = await pool.query(sql, sqlParams);
-  res.redirect("/profile");
-});
-
-// -------- Home & dbTest routes ----------------------------------------
+//routes
 app.get("/", (req, res) => {
   res.render("home.ejs");
 });
+
+//logout route
+app.get("/logout", isAuthenticated, (req, res) => {
+  req.session.destroy();
+  res.redirect("/");
+});
+
+
+//Sign Up GET
+app.get("/signUp", (req, res) => {
+  res.render("signUp.ejs");
+});
+
+//Sign Up route POST
+app.post("/signUp", async (req, res) => {
+  let username = req.body.username;
+  let password = req.body.password;
+  let email = req.body.email;
+  let firstName = req.body.firstName;
+  let lastName = req.body.lastName;
+
+  let hashedPassword = await bcrypt.hash(password, 10);
+  const pfp_url =
+    "https://i.pinimg.com/236x/68/31/12/68311248ba2f6e0ba94ff6da62eac9f6.jpg";
+
+  let sql = `
+            INSERT INTO user_account 
+            (user_name, email, password, firstName, lastName, pfp_url)
+            VALUES (?, ?, ?, ?, ?, ?)`;
+  const [results] = await pool.query(sql, [
+    username,
+    email,
+    hashedPassword,
+    firstName,
+    lastName,
+    pfp_url,
+  ]);
+
+  res.redirect("/login");
+});
+
+//loging Get
+app.get("/login", (req, res) => {
+  res.render("login.ejs");
+});
+
+//login Route
+app.post("/login", async (req, res) => {
+  let username = req.body.username;
+  let password = req.body.password;
+
+  let passwordHash = "";
+
+  let sql = `SELECT * 
+            FROM user_account 
+            WHERE user_name = ?
+                `;
+  const [rows] = await pool.query(sql, [username, password]);
+  if (rows.length > 0) {
+    passwordHash = rows[0].password;
+  }
+
+  let match = await bcrypt.compare(password, passwordHash);
+
+  if (match) {
+    req.session.isAuthenticated = true;
+    res.redirect("/welcome");
+  } else {
+    res.redirect("/");
+  }
+});
+
+//function
+function isAuthenticated(req, res, next) {
+  if (!req.session.authenticated) {
+    res.redirect("/");
+  } else {
+    next();
+  }
+}
+
+//comic Home page
+app.post("/signup", (req, res) => {
+  let { password, confirmPassword } = req.body;
+  if (password != confirmPassword) {
+    return res.render("signup", { error: "Password does not match" });
+  }
+  res.redirect("/home");
+});
+
+
+
+//Search By Keyword
+// app.get("/searchByKeyword", async (req, res) => {
+//   let keyword = req.query.keyword;
+//   let sql = `
+
+//                 `; //need sql
+//   let sqlParams = [`${keyword}`];
+//   const [rows] = await pool.query(sql, sqlParams);
+//   res.render("results.ejs", { rows });
+// });
 
 app.get("/dbTest", async (req, res) => {
   try {
@@ -79,7 +166,7 @@ app.get("/apiTest", async (req, res) => {
   const data = await response.json();
   console.log(data.results);
   res.render("issues.ejs", { data: data.results });
-});
+
 
 app.get("/testIssue/:comicvine_id", async (req, res) => {
   const { comicvine_id } = req.params;

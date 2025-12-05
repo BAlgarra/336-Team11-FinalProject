@@ -41,7 +41,6 @@ app.get("/logout", isAuthenticated, (req, res) => {
   res.redirect("/");
 });
 
-
 //Sign Up GET
 app.get("/signUp", (req, res) => {
   res.render("signUp.ejs");
@@ -100,8 +99,9 @@ app.post("/login", async (req, res) => {
 
   if (match) {
     req.session.isAuthenticated = true;
-    res.redirect("/welcome");
+    res.redirect("/");
   } else {
+    // change when password authentication implemented
     res.redirect("/");
   }
 });
@@ -121,10 +121,43 @@ app.post("/signup", (req, res) => {
   if (password != confirmPassword) {
     return res.render("signup", { error: "Password does not match" });
   }
-  res.redirect("/home");
+  res.redirect("/");
 });
 
+//  ------------------- Profile routs ----------------------------------
+app.get("/profile", async (req, res) => {
+  const userId = 1; //  for pre-auth development will change
+  let sql = `SELECT * FROM user_account WHERE user_id = ?`;
+  const [rows] = await pool.query(sql, [userId]);
+  const userInfo = rows[0];
+  res.render("profile.ejs", { userInfo });
+});
 
+app.post("/updateProfile", async (req, res) => {
+  const userId = req.body.user_id;
+  let newUsername = req.body.newUsername;
+  let newEmail = req.body.newEmail;
+  let newPassword = req.body.newPassword;
+  let newFirstName = req.body.newFirstName;
+  let newLastName = req.body.newLastName;
+  let newPfpUrl = req.body.newPfpUrl;
+  let sex = req.body.sex;
+  //  TODO
+  let sql =
+    "UPDATE user_account SET user_name = ?, email = ?, password = ?, firstName = ?, lastName = ?, pfp_url = ?, sex = ? WHERE user_id = ?";
+  let sqlParams = [
+    newUsername,
+    newEmail,
+    newPassword,
+    newFirstName,
+    newLastName,
+    newPfpUrl,
+    sex,
+    userId,
+  ];
+  const [rows] = await pool.query(sql, sqlParams);
+  res.redirect("/profile");
+});
 
 //Search By Keyword
 // app.get("/searchByKeyword", async (req, res) => {
@@ -166,7 +199,7 @@ app.get("/apiTest", async (req, res) => {
   const data = await response.json();
   console.log(data.results);
   res.render("issues.ejs", { data: data.results });
-
+});
 
 app.get("/testIssue/:comicvine_id", async (req, res) => {
   const { comicvine_id } = req.params;

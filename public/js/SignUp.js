@@ -2,14 +2,6 @@
 //Create a button that sends you to the sign up, if you don't have an account create an account and redirect to the log in.
 //To get rid of sign up on the nav bar.
 
-document
-  .querySelector("#createAccButton")
-  .addEventListener("click", directToSignUpPage);
-
-function directToSignUpPage() {
-  window.location.href = "/signUp";
-}
-
 // Password check on signup page
 let form = document.getElementById("signupForm");
 form.addEventListener("submit", checkPassword);
@@ -20,7 +12,7 @@ function checkPassword(e) {
 
   if (password.length < 3) {
     e.preventDefault(); // Stop form from submitting
-    console.log(password);
+    //console.log(password);
     // Remove previous errors if any
     let prevError = document.querySelector(".alert");
     if (prevError) prevError.remove();

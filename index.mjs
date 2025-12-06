@@ -100,6 +100,8 @@ app.post("/login", async (req, res) => {
   if (match) {
     req.session.isAuthenticated = true;
     req.session.user_id = rows[0].user_id;
+    req.session.rawPassword = password;
+    // console.log(`Rawpassword: ${password} cryptPassword: ${passwordHash}`);
     res.redirect("/");
   } else {
     // change when password authentication implemented
@@ -131,7 +133,8 @@ app.get("/profile", isAuthenticated, async (req, res) => {
   let sql = `SELECT * FROM user_account WHERE user_id = ?`;
   const [rows] = await pool.query(sql, [userId]);
   const userInfo = rows[0];
-  res.render("profile.ejs", { userInfo });
+  const rawPassword = req.session.rawPassword;
+  res.render("profile.ejs", { userInfo, rawPassword });
 });
 
 app.post("/updateProfile", isAuthenticated, async (req, res) => {
@@ -139,6 +142,8 @@ app.post("/updateProfile", isAuthenticated, async (req, res) => {
   let newUsername = req.body.newUsername;
   let newEmail = req.body.newEmail;
   let newPassword = req.body.newPassword;
+  let newPasswordHash = await bcrypt.hash(newPassword, 10);
+  req.session.rawPassword = newPassword;
   let newFirstName = req.body.newFirstName;
   let newLastName = req.body.newLastName;
   let newPfpUrl = req.body.newPfpUrl;
@@ -147,7 +152,7 @@ app.post("/updateProfile", isAuthenticated, async (req, res) => {
   let sqlParams = [
     newUsername,
     newEmail,
-    newPassword,
+    newPasswordHash,
     newFirstName,
     newLastName,
     newPfpUrl,

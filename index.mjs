@@ -49,8 +49,8 @@ app.get("/signUp", (req, res) => {
 //Sign Up route POST
 app.post("/signUp", async (req, res) => {
   let username = req.body.username;
-  let password = req.body.password;
   let email = req.body.email;
+  let password = req.body.password;
   let firstName = req.body.firstName;
   let lastName = req.body.lastName;
 

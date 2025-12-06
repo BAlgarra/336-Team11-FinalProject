@@ -53,15 +53,20 @@ app.post("/signUp", async (req, res) => {
   let password = req.body.password;
   let firstName = req.body.firstName;
   let lastName = req.body.lastName;
-
+  let sex;
+  if(req.body.sex) {
+    sex = req.body.sex;
+  } else {
+    sex = 'm';  //  default when no sex is specified
+  }
   let hashedPassword = await bcrypt.hash(password, 10);
   const pfp_url =
     "https://i.pinimg.com/236x/68/31/12/68311248ba2f6e0ba94ff6da62eac9f6.jpg";
 
   let sql = `
             INSERT INTO user_account 
-            (user_name, email, password, firstName, lastName, pfp_url)
-            VALUES (?, ?, ?, ?, ?, ?)`;
+            (user_name, email, password, firstName, lastName, pfp_url, sex)
+            VALUES (?, ?, ?, ?, ?, ?, ?)`;
   const [results] = await pool.query(sql, [
     username,
     email,
@@ -69,6 +74,7 @@ app.post("/signUp", async (req, res) => {
     firstName,
     lastName,
     pfp_url,
+    sex,
   ]);
 
   res.redirect("/login");

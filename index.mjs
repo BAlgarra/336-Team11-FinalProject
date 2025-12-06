@@ -99,17 +99,18 @@ app.post("/login", async (req, res) => {
 
   if (match) {
     req.session.isAuthenticated = true;
+    req.session.user_id = rows[0].user_id;
     res.redirect("/");
   } else {
     // change when password authentication implemented
-    res.redirect("/");
+    res.redirect("/login");
   }
 });
 
 //function
 function isAuthenticated(req, res, next) {
-  if (!req.session.authenticated) {
-    res.redirect("/");
+  if (!req.session.isAuthenticated) {
+    res.redirect("/login");
   } else {
     next();
   }
@@ -125,16 +126,16 @@ app.post("/signup", (req, res) => {
 });
 
 //  ------------------- Profile routs ----------------------------------
-app.get("/profile", async (req, res) => {
-  const userId = 1; //  for pre-auth development will change
+app.get("/profile", isAuthenticated, async (req, res) => {
+  const userId = req.session.user_id;
   let sql = `SELECT * FROM user_account WHERE user_id = ?`;
   const [rows] = await pool.query(sql, [userId]);
   const userInfo = rows[0];
   res.render("profile.ejs", { userInfo });
 });
 
-app.post("/updateProfile", async (req, res) => {
-  const userId = req.body.user_id;
+app.post("/updateProfile", isAuthenticated, async (req, res) => {
+  const userId = req.session.user_id;
   let newUsername = req.body.newUsername;
   let newEmail = req.body.newEmail;
   let newPassword = req.body.newPassword;
@@ -142,9 +143,7 @@ app.post("/updateProfile", async (req, res) => {
   let newLastName = req.body.newLastName;
   let newPfpUrl = req.body.newPfpUrl;
   let sex = req.body.sex;
-  //  TODO
-  let sql =
-    "UPDATE user_account SET user_name = ?, email = ?, password = ?, firstName = ?, lastName = ?, pfp_url = ?, sex = ? WHERE user_id = ?";
+  let sql = "UPDATE user_account SET user_name = ?, email = ?, password = ?, firstName = ?, lastName = ?, pfp_url = ?, sex = ? WHERE user_id = ?";
   let sqlParams = [
     newUsername,
     newEmail,
@@ -197,7 +196,7 @@ app.get("/apiTest", async (req, res) => {
     headers: { Accept: "application/json" },
   });
   const data = await response.json();
-  console.log(data.results);
+  // console.log(data.results);
   res.render("issues.ejs", { data: data.results });
 });
 
@@ -209,7 +208,7 @@ app.get("/testIssue/:comicvine_id", async (req, res) => {
     const response = await fetch(url);
     const data = await response.json();
 
-    console.log(data.results);
+    // console.log(data.results);
     res.json(data.results);
   } catch (err) {
     console.error("ComicVine API error:", err);
@@ -233,17 +232,14 @@ app.get("/browse", async (req, res) => {
   );
   const data = await rawData.json();
   const issueData = data.results;
-
-  // TEMP user_id
-  const user_id = 1;
-
+  const user_id = req.session.user_id;
   // Fetch collections for dropdown
   const [collections] = await pool.query(
     "SELECT * FROM collection WHERE user_id = ?",
     [user_id]
   );
 
-  console.log(issueData);
+  // console.log(issueData);
   const hasPrevPage = pageNum != 0;
   res.render("browse.ejs", {
     issueData,
@@ -256,14 +252,12 @@ app.get("/browse", async (req, res) => {
 
 // -------- New Collection Page ------------------------------------
 
-app.get("/newCollection", (req, res) => {
-  // For now user_id = 1 until login system is added
-  const user_id = 1;
-
+app.get("/newCollection", isAuthenticated, (req, res) => {
+  const user_id = req.session.user_id;
   res.render("newCollection.ejs", { user_id });
 });
 
-app.post("/newCollection", async (req, res) => {
+app.post("/newCollection", isAuthenticated, async (req, res) => {
   const { name, description, user_id } = req.body;
 
   const sql = `
@@ -276,7 +270,7 @@ app.post("/newCollection", async (req, res) => {
   res.redirect("/collections");
 });
 
-app.post("/addComicToCollection", async (req, res) => {
+app.post("/addComicToCollection", isAuthenticated, async (req, res) => {
   // until we can login the button will manually add collections to userId 1 and collection 1
   const { comicvine_id, collection_id } = req.body;
 
@@ -342,8 +336,8 @@ app.post("/addComicToCollection", async (req, res) => {
   res.redirect("/browse");
 });
 
-app.get("/collections", async (req, res) => {
-  const user_id = 1; // Change when login implemented
+app.get("/collections", isAuthenticated, async (req, res) => {
+  const user_id = req.session.user_id;
 
   const [collections] = await pool.query(
     "SELECT * FROM collection WHERE user_id = ?",

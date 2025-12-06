@@ -19,47 +19,46 @@
     <link rel="stylesheet" href="/css/styles.css" />
     <title>Comic Book Website</title>
     <link rel="stylesheet" href="/public/css/style.css" />
-    <title>Sign Up Page</title>
   </head>
   <body>
     <%- include('partials/header.ejs') %> <%- include('partials/navbar.ejs') %>
     <div class="container">
-      <h1>Sign Up</h1>
-      <form action="/signup" method="POST">
-        <!-- user_name, email, password, firstName, lastName, pfp_url, sex -->
-        <div>
-          <label for="userName"> Username:</label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            class="u-full-width"
-          /><br />
-        </div>
+      <div class="row">
+        <div class="card card-body">
+          <h1 class="heading">Sign Up</h1>
+          <form id="signupForm" action="/signup" method="POST">
+            <!-- user_name, email, password, firstName, lastName, pfp_url, sex -->
+            <div>
+              <label for="userName"> Username:</label>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                class="u-full-width"
+              /><br />
+            </div>
 
-        <div>
-          <label for="email">email:</label>
-          <input type="email" name="email" class="u-full-width" />
-          <span id="email"></span> <br />
-        </div>
+            <div>
+              <label for="email">email:</label>
+              <input type="email" name="email" class="u-full-width" />
+            </div>
 
-        <div>
-          <label for="password">Password:</label>
-          <input type="password" name="password" class="u-full-width" />
-          <span id="password"></span> <br />
-        </div>
+            <div>
+              <label for="password">Password:</label>
+              <input type="password" name="password" class="u-full-width" />
+            </div>
 
-        <div>
-          <label for="firstName">First Name:</label>
-          <input type="text" name="firtName" class="u-full-width" /><br />
-        </div>
+            <div>
+              <label for="firstName">First Name:</label>
+              <input type="text" name="firtName" class="u-full-width" /><br />
+            </div>
 
-        <div>
-          <label for="lastName">Last Name:</label>
-          <input type="text" name="lastName" class="u-full-width" /><br />
-        </div>
+            <div>
+              <label for="lastName">Last Name:</label>
+              <input type="text" name="lastName" class="u-full-width" /><br />
+            </div>
 
-        <!-- <div>
+            <!-- <div>
           <label>Verify Password:</label>
           <input
             type="password"
@@ -68,10 +67,10 @@
           /><br />
         </div> -->
 
-        <input type="submit" value="Sign up!" class="u-full-width" />
-      </form>
+            <input type="submit" value="Sign up!" class="u-full-width" />
+          </form>
+        </div>
+      </div>
     </div>
-
-    <script src="/public/js/script.js"></script>
   </body>
 </html>

@@ -18,7 +18,6 @@
     />
     <link rel="stylesheet" href="/css/styles.css" />
     <title>Comic Book Website</title>
-    <link rel="stylesheet" href="/public/css/style.css" />
   </head>
   <body style="background-color: darkgray;">
     <%- include('partials/header.ejs') %> <%- include('partials/navbar.ejs') %>
@@ -43,9 +42,18 @@
             <button class="button-primary u-full-width" type="submit">
               Login
             </button>
+
+            <button
+              class="button-primary u-full-width"
+              type="button"
+              id="createAccButton"
+            >
+              Create Account
+            </button>
           </form>
         </div>
       </div>
     </div>
+    <script src="/js/SignUp.js"></script>
   </body>
 </html>

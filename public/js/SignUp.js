@@ -6,9 +6,19 @@
 let form = document.getElementById("signupForm");
 form.addEventListener("submit", checkPassword);
 
-function checkPassword(e) {
+async function checkPassword(e) {   //  might want to change function name to something that includes password, email, and username
   let passwordInput = document.getElementById("password");
+  let usernameInput = document.getElementById("username");
+  let emailInput = document.getElementById("email");
   let password = passwordInput.value;
+  let username = usernameInput.value;
+  let email = emailInput.value;
+
+  let rawResponse = await fetch(`/api/isUsernameOrEmailDuplicate?username=${username}&email=${email}`);
+  let cookedData = await rawResponse.json();
+  //  these are the booleans that we will use to determine the error message to show
+  let isUsernameDuplicate = cookedData.isUsernameDuplicate;
+  let isEmailDuplicate = cookedData.isEmailDuplicate;
 
   if (password.length < 3) {
     e.preventDefault(); // Stop form from submitting

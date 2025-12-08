@@ -392,15 +392,16 @@ app.get("/searchPage", async (req, res) => {
 });
 
 app.get("/search", async (req, res) => {
-  const { query = "", resources = "volume", limit = "10" } = req.query;
+  // const { query = "", resources = "issue", limit = "10" } = req.query;
+  const { query = "", limit = "10" } = req.query;
 
   const url = new URL("https://comicvine.gamespot.com/api/search/");
   url.search = new URLSearchParams({
     api_key: "76c424ab42c38f52084d995255a524f13416c44f",
     format: "json",
     query,              // <-- user search text
-    resources,          // <-- from dropdown
-    field_list: "name,id,image,site_detail_url",
+    resources: "issue",          // <-- from dropdown
+    field_list: "id,name,issue_number,image,volume,cover_date,store_date,api_detail_url,site_detail_url,description",
     limit,              // <-- from dropdown
   }).toString();
 
@@ -409,10 +410,21 @@ app.get("/search", async (req, res) => {
   });
   const data = await response.json();
 
-  res.render("issues.ejs", {
-    data: data.results,
-    query,              // <-- pass to EJS
-    resources,
-    limit,
-  });
+  const issueData = data.results || [];
+const user_id = req.session.user_id;
+const [collections] = await pool.query(
+  "SELECT * FROM collection WHERE user_id = ?",
+  [user_id]
+);
+
+res.render("issues.ejs", {
+  issueData,
+  pageNum: 0,
+  hasPrevPage: false,
+  collections,
+  user_id,
+  query,
+  limit,
+  isSearch: true,
+});
 });

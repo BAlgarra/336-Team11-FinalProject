@@ -18,6 +18,40 @@
   <%- include('partials/header.ejs') %>
     <%- include('partials/navbar.ejs') %>
 
+    <form action="/search" method="GET">
+
+  <label for="query">Search</label>
+  <input 
+    type="text" 
+    id="query" 
+    name="query"
+    placeholder="Batman, Spider-Man..."
+    value=""
+
+    required
+  />
+
+  <label for="resources">Search Type</label>
+  <select id="resources" name="resources">
+    <option value="volume">Volumes</option>
+    <option value="issue">Issues</option>
+    <option value="character">Characters</option>
+    <option value="team">Teams</option>
+    <option value="publisher">Publishers</option>
+    <option value="person">People (Creators)</option>
+    <option value="series">Series</option>
+  </select>
+
+  <label for="limit">Results Limit</label>
+  <select id="limit" name="limit">
+    <option value="5">5</option>
+    <option value="10" selected>10</option>
+    <option value="20">20</option>
+    <option value="50">50</option>
+  </select>
+
+  <button type="submit">Search</button>
+</form>
 
      
 

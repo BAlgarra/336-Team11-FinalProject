@@ -54,7 +54,7 @@ app.post("/signUp", async (req, res) => {
   let firstName = req.body.firstName;
   let lastName = req.body.lastName;
   let sex;
-  if(req.body.sex) {
+  if (req.body.sex) {
     sex = req.body.sex;
   } else {
     sex = 'm';  //  default when no sex is specified
@@ -379,6 +379,26 @@ app.get("/collection/:id", async (req, res) => {
   const [comics] = await pool.query(sql, [collection_id]);
 
   res.render("collectionView.ejs", { comics });
+});
+
+app.get("/api/isUsernameOrEmailDuplicate", async (req, res) => {
+  //  username check
+  const { username } = req.query;
+  let isUsernameDuplicate = false;
+  let usernameSql = `select * from user_account where user_name = '${username}'`;
+  const [usernameUsers] = await pool.query(usernameSql);
+  if (usernameUsers.length > 0) {
+    isUsernameDuplicate = true;
+  }
+  //  email check
+  const { email } = req.query;
+  let isEmailDuplicate = false;
+  let emailSql = `select * from user_account where email = '${email}'`;
+  const [emailUsers] = await pool.query(emailSql);
+  if (emailUsers.length > 0) {
+    isEmailDuplicate = true;
+  }
+  res.json({ isUsernameDuplicate, isEmailDuplicate });
 });
 
 app.listen(3000, () => {

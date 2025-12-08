@@ -184,5 +184,34 @@
     font-size: 0.9rem;
     color: #666;
   }
+
+#carouselExampleIndicators {
+  width: 60%;
+  margin: 0 auto;
+  height: 400px;              /* desired carousel height */
+  position: relative;         /* ensure correct positioning context */
+  overflow: hidden;           /* hide any overflow just in case */
+}
+
+
+#carouselExampleIndicators .carousel-inner,
+#carouselExampleIndicators .carousel-item {
+  height: 100%;
+}
+
+
+#carouselExampleIndicators .carousel-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;          
+  display: block;
+}
+
+#carouselExampleIndicators .carousel-control-prev,
+#carouselExampleIndicators .carousel-control-next {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
   
   

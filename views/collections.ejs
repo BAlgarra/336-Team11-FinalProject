@@ -13,19 +13,15 @@
     <link href="/css/styles.css" rel="stylesheet" />
   </head>
 
-<body style="background-color: darkgray;">
-
-    <%- include('partials/header.ejs') %>
-    <%- include('partials/navbar.ejs') %>
+  <body style="background-color: darkgray">
+    <%- include('partials/header.ejs') %> <%- include('partials/navbar.ejs') %>
 
     <div class="container mt-5">
-
       <!-- Page Heading -->
       <h2 class="mb-4">Select a Collection</h2>
 
       <!-- Select Collection Form -->
       <form action="/collection/select" method="POST" class="mb-5">
-
         <label for="collectionSelect" class="form-label">
           <strong>Choose one of your collections:</strong>
         </label>
@@ -39,7 +35,7 @@
           <option value="">-- Select a Collection --</option>
 
           <% collections.forEach(col => { %>
-            <option value="<%= col.collection_id %>"><%= col.name %></option>
+          <option value="<%= col.collection_id %>"><%= col.name %></option>
           <% }) %>
         </select>
 
@@ -49,7 +45,7 @@
       </form>
 
       <!-- Divider -->
-      <hr class="my-4">
+      <hr class="my-4" />
 
       <!-- Create New Collection Button -->
       <h4>Create a New Collection</h4>
@@ -60,9 +56,6 @@
           Create New Collection
         </button>
       </form>
-
     </div>
-
   </body>
 </html>
-

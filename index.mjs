@@ -10,7 +10,6 @@ app.use(express.static("public"));
 
 //for Express to get values using POST method
 app.use(express.urlencoded({ extended: true }));
-app.use(express.urlencoded({ extended: true }));
 app.set("trust proxy", 1);
 app.use(
   session({
@@ -54,10 +53,10 @@ app.post("/signUp", async (req, res) => {
   let firstName = req.body.firstName;
   let lastName = req.body.lastName;
   let sex;
-  if(req.body.sex) {
+  if (req.body.sex) {
     sex = req.body.sex;
   } else {
-    sex = 'm';  //  default when no sex is specified
+    sex = "m"; //  default when no sex is specified
   }
   let hashedPassword = await bcrypt.hash(password, 10);
   const pfp_url =
@@ -154,7 +153,8 @@ app.post("/updateProfile", isAuthenticated, async (req, res) => {
   let newLastName = req.body.newLastName;
   let newPfpUrl = req.body.newPfpUrl;
   let sex = req.body.sex;
-  let sql = "UPDATE user_account SET user_name = ?, email = ?, password = ?, firstName = ?, lastName = ?, pfp_url = ?, sex = ? WHERE user_id = ?";
+  let sql =
+    "UPDATE user_account SET user_name = ?, email = ?, password = ?, firstName = ?, lastName = ?, pfp_url = ?, sex = ? WHERE user_id = ?";
   let sqlParams = [
     newUsername,
     newEmail,
@@ -358,6 +358,32 @@ app.get("/collections", isAuthenticated, async (req, res) => {
   res.render("collections.ejs", { collections });
 });
 
+// Delete Collection
+app.get("/deleteCollection/:id", isAuthenticated, async (req, res) => {
+  const collectionId = req.params.id;
+  const userId = req.session.user_id;
+
+  const sql = `
+    DELETE FROM collection
+    WHERE collection_id = ? AND user_id = ?
+  `;
+
+  await pool.query(sql, [collectionId, userId]);
+
+  res.redirect("/collections");
+});
+
+// Delete comic from a collection
+app.get("/deleteCollectionItem/:collectionId/:comicId", isAuthenticated, async (req, res) => {
+  const { collectionId, comicId } = req.params;
+
+  const sql = "DELETE FROM collection_comic WHERE collection_id = ? AND comic_id = ?";
+  await pool.query(sql, [collectionId, comicId]);
+
+  res.redirect(`/collection/${collectionId}`);
+});
+
+
 app.post("/collection/select", (req, res) => {
   const { collection_id } = req.body;
 
@@ -376,9 +402,17 @@ app.get("/collection/:id", async (req, res) => {
     WHERE collection_comic.collection_id = ?
   `;
 
+  // Get collection name
+  const [collectionRows] = await pool.query(
+    "SELECT name FROM collection WHERE collection_id = ?",
+    [collection_id]
+  );
+
+  const collectionName = collectionRows.length ? collectionRows[0].name : "Your Collection";
+
   const [comics] = await pool.query(sql, [collection_id]);
 
-  res.render("collectionView.ejs", { comics });
+  res.render("collectionView.ejs", { comics, collection_id, collectionName });
 });
 
 app.listen(3000, () => {

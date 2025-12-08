@@ -2,7 +2,7 @@
 
 
 #banner {
-    height: 15vh;
+    height: 12vh;
     background-image: url("/img/actionBackground.jpg");
     background-position: center;
     display: flex;
@@ -188,7 +188,7 @@
 #carouselExampleIndicators {
   width: 60%;
   margin: 0 auto;
-  height: 400px;              /* desired carousel height */
+  /* height: 400px;              desired carousel height */
   position: relative;         /* ensure correct positioning context */
   overflow: hidden;           /* hide any overflow just in case */
 }
@@ -203,7 +203,8 @@
 #carouselExampleIndicators .carousel-item img {
   width: 100%;
   height: 100%;
-  object-fit: cover;          
+  object-fit: cover;        
+  object-position: center;  
   display: block;
 }
 
@@ -211,7 +212,26 @@
 #carouselExampleIndicators .carousel-control-next {
   top: 50%;
   transform: translateY(-50%);
+  opacity: 1;
 }
 
-  
+.navbar {
+  padding-top: 0.3rem;
+  padding-bottom: 0.0rem;
+}
+
+.navbar .nav-link {
+  padding-top: 0.3rem;
+  padding-bottom: 0.0rem;
+}
+
+#carouselExampleIndicators .carousel-control-prev-icon,
+#carouselExampleIndicators .carousel-control-next-icon {
+  background-size: 60px 60px;   /* bigger icon */
+  width: 60px;
+  height: 60px;
+  filter: brightness(0) invert(1);  /* makes arrows white and visible */
+}
+
+
   

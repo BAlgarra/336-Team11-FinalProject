@@ -384,3 +384,9 @@ app.get("/collection/:id", async (req, res) => {
 app.listen(3000, () => {
   console.log("Express server running");
 });
+
+app.get("/search", async (req, res) => {
+  
+    res.render("search.ejs");
+  
+});

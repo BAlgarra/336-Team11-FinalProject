@@ -19,6 +19,12 @@ app.use(
   })
 );
 
+// Looked this up trying to use session in partials
+app.use((req, res, next) => {
+  res.locals.session = req.session;
+  next();
+});
+
 //setting up database connection pool
 const pool = mysql.createPool({
   host: "ui0tj7jn8pyv9lp6.cbetxkdyhwsb.us-east-1.rds.amazonaws.com",
@@ -105,6 +111,7 @@ app.post("/login", async (req, res) => {
   if (match) {
     req.session.isAuthenticated = true;
     req.session.user_id = rows[0].user_id;
+    req.session.isAdmin = rows[0].isAdmin; 
     req.session.rawPassword = password;
     // console.log(`Rawpassword: ${password} cryptPassword: ${passwordHash}`);
     res.redirect("/");
@@ -114,12 +121,35 @@ app.post("/login", async (req, res) => {
   }
 });
 
-//function
+//admin routes
+
+app.get("/admin/users", isAuthenticated, isAdmin, async (req, res) => {
+  const [users] = await pool.query("SELECT user_id, user_name, password, email, isAdmin FROM user_account");
+  res.render("admin.ejs", { users });
+});
+
+app.get("/admin/deleteUser/:id", isAuthenticated, isAdmin, async (req, res) => {
+  const userId = req.params.id;
+
+  await pool.query("DELETE FROM user_account WHERE user_id = ?", [userId]);
+
+  res.redirect("/admin/users");
+});
+
+//functions
 function isAuthenticated(req, res, next) {
   if (!req.session.isAuthenticated) {
     res.redirect("/login");
   } else {
     next();
+  }
+}
+
+function isAdmin(req, res, next) {
+  if (req.session.isAuthenticated && req.session.isAdmin === 1) {
+    next();
+  } else {
+    res.redirect("/");
   }
 }
 

@@ -85,6 +85,29 @@ app.post("/signUp", async (req, res) => {
   res.redirect("/login");
 });
 
+//Duplicate Email or username route
+app.get("/api/isUsernameOrEmailDuplicate", async (req, res) => {
+  //  username check
+  const { username } = req.query;
+  let isUsernameDuplicate = false;
+  let usernameSql = `select * 
+                      from user_account 
+                      where user_name = '${username}'`;
+  const [usernameUsers] = await pool.query(usernameSql);
+  if (usernameUsers.length > 0) {
+    isUsernameDuplicate = true;
+  }
+  //  email check
+  const { email } = req.query;
+  let isEmailDuplicate = false;
+  let emailSql = `select * from user_account where email = '${email}'`;
+  const [emailUsers] = await pool.query(emailSql);
+  if (emailUsers.length > 0) {
+    isEmailDuplicate = true;
+  }
+  res.json({ isUsernameDuplicate, isEmailDuplicate });
+});
+
 //loging Get
 app.get("/login", (req, res) => {
   res.render("login.ejs");
@@ -111,7 +134,7 @@ app.post("/login", async (req, res) => {
   if (match) {
     req.session.isAuthenticated = true;
     req.session.user_id = rows[0].user_id;
-    req.session.isAdmin = rows[0].isAdmin; 
+    req.session.isAdmin = rows[0].isAdmin;
     req.session.rawPassword = password;
     // console.log(`Rawpassword: ${password} cryptPassword: ${passwordHash}`);
     res.redirect("/");
@@ -124,7 +147,9 @@ app.post("/login", async (req, res) => {
 //admin routes
 
 app.get("/admin/users", isAuthenticated, isAdmin, async (req, res) => {
-  const [users] = await pool.query("SELECT user_id, user_name, password, email, isAdmin FROM user_account");
+  const [users] = await pool.query(
+    "SELECT user_id, user_name, password, email, isAdmin FROM user_account"
+  );
   res.render("admin.ejs", { users });
 });
 
@@ -404,15 +429,19 @@ app.get("/deleteCollection/:id", isAuthenticated, async (req, res) => {
 });
 
 // Delete comic from a collection
-app.get("/deleteCollectionItem/:collectionId/:comicId", isAuthenticated, async (req, res) => {
-  const { collectionId, comicId } = req.params;
+app.get(
+  "/deleteCollectionItem/:collectionId/:comicId",
+  isAuthenticated,
+  async (req, res) => {
+    const { collectionId, comicId } = req.params;
 
-  const sql = "DELETE FROM collection_comic WHERE collection_id = ? AND comic_id = ?";
-  await pool.query(sql, [collectionId, comicId]);
+    const sql =
+      "DELETE FROM collection_comic WHERE collection_id = ? AND comic_id = ?";
+    await pool.query(sql, [collectionId, comicId]);
 
-  res.redirect(`/collection/${collectionId}`);
-});
-
+    res.redirect(`/collection/${collectionId}`);
+  }
+);
 
 app.post("/collection/select", (req, res) => {
   const { collection_id } = req.body;
@@ -438,7 +467,9 @@ app.get("/collection/:id", async (req, res) => {
     [collection_id]
   );
 
-  const collectionName = collectionRows.length ? collectionRows[0].name : "Your Collection";
+  const collectionName = collectionRows.length
+    ? collectionRows[0].name
+    : "Your Collection";
 
   const [comics] = await pool.query(sql, [collection_id]);
 

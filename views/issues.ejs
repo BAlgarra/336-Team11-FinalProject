@@ -17,7 +17,7 @@
       <form action="/search" method="GET">
 
         <label for="query">Search</label>
-        <input type="text" id="query" name="query" placeholder="Batman, Spider-Man..." value="" required />
+        <input type="text" id="query" name="query" placeholder="Batman, Spider-Man..." value="<%= query %>" required />
 
         <label for="limit">Results Limit</label>
         <select id="limit" name="limit">
@@ -117,7 +117,7 @@
                     <hr />
 
                     <!-- Add to Collection Button w/ temp values (Needs readjusting with collection selection and authenticated user ID) -->
-                    <form action="/addComicToCollection" method="POST">
+                    <form action="/addComicToCollectionFromSearch" method="POST">
                       <input type="hidden" name="comicvine_id" value="<%= issueData[i].id %>" />
 
                       <!-- TEMP values -->

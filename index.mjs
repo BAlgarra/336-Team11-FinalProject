@@ -428,3 +428,70 @@ res.render("issues.ejs", {
   isSearch: true,
 });
 });
+
+app.post("/addComicToCollectionFromSearch", isAuthenticated, async (req, res) => {
+  // until we can login the button will manually add collections to userId 1 and collection 1
+  const { comicvine_id, collection_id } = req.body;
+
+  // 1. Fetch full issue from ComicVine
+  const url = `https://comicvine.gamespot.com/api/issue/4000-${comicvine_id}/?api_key=${api_key}&format=json`;
+  const response = await fetch(url);
+  const data = await response.json();
+  const issue = data.results;
+
+  // 2. Insert comic if not already in DB
+  const insertComicSQL = `
+      INSERT INTO comic (
+        comicvine_id,
+        title,
+        issue_num,
+        volume_id,
+        volume_name,
+        cover_date,
+        store_date,
+        cover_image_url,
+        image_super_url,
+        image_thumb_url,
+        description,
+        site_detail_url,
+        api_detail_url
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ON DUPLICATE KEY UPDATE comic_id = comic_id
+  `;
+
+  await pool.query(insertComicSQL, [
+    issue.id,
+    issue.name || null,
+    issue.issue_number || null,
+    issue.volume?.id || null,
+    issue.volume?.name || null,
+    issue.cover_date || null,
+    issue.store_date || null,
+    issue.image?.original_url || null,
+    issue.image?.super_url || issue.image?.medium_url || null,
+    issue.image?.thumb_url || null,
+    issue.description || null,
+    issue.site_detail_url || null,
+    issue.api_detail_url || null,
+  ]);
+
+  // 3. Get local comic_id
+  const [rows] = await pool.query(
+    `SELECT comic_id FROM comic WHERE comicvine_id = ?`,
+    [issue.id]
+  );
+  const comic_id = rows[0].comic_id;
+
+  // 4. Insert into join table
+  const insertJoinSQL = `
+      INSERT IGNORE INTO collection_comic (collection_id, comic_id)
+      VALUES (?, ?)
+  `;
+
+  await pool.query(insertJoinSQL, [collection_id, comic_id]);
+
+  // 5. Redirect back to collection page when created
+  const redirectUrl = req.get("referer") || "/search";
+res.redirect(redirectUrl);
+});

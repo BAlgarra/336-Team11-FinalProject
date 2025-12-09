@@ -186,7 +186,7 @@
   }
 
 #carouselExampleIndicators {
-  width: 60%;
+  width: 70%;
   margin: 0 auto;
   /* height: 400px;              desired carousel height */
   position: relative;         /* ensure correct positioning context */
@@ -231,6 +231,18 @@
   width: 60px;
   height: 60px;
   filter: brightness(0) invert(1);  /* makes arrows white and visible */
+}
+
+.centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#getStarted {
+  font-size: 7rem;
+  font-weight: bold;
+  font-family: 'Bangers';
 }
 
 

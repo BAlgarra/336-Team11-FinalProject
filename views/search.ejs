@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css"
+    integrity="sha512-EZLkOqwILORob+p0BXZc+Vm3RgJBOe1Iq/0fiI7r/wJgzOFZMlsqTa29UEl6v6U6gsV4uIpsNZoV32YZqrCRCQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="icon" type="image/png" href="/img/comicFavIcon.png" />
+  <title>Comic Book Website</title>
+</head>
+
+<body>
+  <%- include('partials/header.ejs') %>
+    <%- include('partials/navbar.ejs') %>
+    <div class="centered">
+
+    <img src="/img/SearchImg.png" alt="Search Icon" class="searchIcon" style="height: 500px;"/>
+    <div style="display: flex; flex-direction: row;">
+      <form action="/search" method="GET">
+
+        <label for="query" class="fs-2">Search</label>
+        <input type="text" id="query" name="query" placeholder="Batman, Spider-Man..." value="" required />
+
+        <label for="limit" class="fs-2">Results Limit</label>
+        <select id="limit" name="limit">
+          <option value="5">5</option>
+          <option value="10" selected>10</option>
+          <option value="20">20</option>
+          <option value="50">50</option>
+        </select>
+
+        <button type="submit">Search</button>
+        
+      </form>
+      </div>
+    </div>
+
+
+
+</body>
+
+</html>

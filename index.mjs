@@ -458,16 +458,16 @@ app.get("/api/isUsernameOrEmailDuplicate", async (req, res) => {
   //  username check
   const { username } = req.query;
   let isUsernameDuplicate = false;
-  let usernameSql = `select * from user_account where user_name = '${username}'`;
-  const [usernameUsers] = await pool.query(usernameSql);
+  let usernameSql = `select * from user_account where user_name = ?`;
+  const [usernameUsers] = await pool.query(usernameSql, [username]);
   if (usernameUsers.length > 0) {
     isUsernameDuplicate = true;
   }
   //  email check
   const { email } = req.query;
   let isEmailDuplicate = false;
-  let emailSql = `select * from user_account where email = '${email}'`;
-  const [emailUsers] = await pool.query(emailSql);
+  let emailSql = `select * from user_account where email = ?`;
+  const [emailUsers] = await pool.query(emailSql, [email]);
   if (emailUsers.length > 0) {
     isEmailDuplicate = true;
   }

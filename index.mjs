@@ -10,7 +10,6 @@ app.use(express.static("public"));
 
 //for Express to get values using POST method
 app.use(express.urlencoded({ extended: true }));
-app.use(express.urlencoded({ extended: true }));
 app.set("trust proxy", 1);
 app.use(
   session({
@@ -19,6 +18,12 @@ app.use(
     saveUninitialized: true,
   })
 );
+
+// Looked this up trying to use session in partials
+app.use((req, res, next) => {
+  res.locals.session = req.session;
+  next();
+});
 
 //setting up database connection pool
 const pool = mysql.createPool({
@@ -54,10 +59,10 @@ app.post("/signUp", async (req, res) => {
   let firstName = req.body.firstName;
   let lastName = req.body.lastName;
   let sex;
-  if(req.body.sex) {
+  if (req.body.sex) {
     sex = req.body.sex;
   } else {
-    sex = 'm';  //  default when no sex is specified
+    sex = "m"; //  default when no sex is specified
   }
   let hashedPassword = await bcrypt.hash(password, 10);
   const pfp_url =
@@ -106,6 +111,7 @@ app.post("/login", async (req, res) => {
   if (match) {
     req.session.isAuthenticated = true;
     req.session.user_id = rows[0].user_id;
+    req.session.isAdmin = rows[0].isAdmin;
     req.session.rawPassword = password;
     // console.log(`Rawpassword: ${password} cryptPassword: ${passwordHash}`);
     res.redirect("/");
@@ -115,12 +121,37 @@ app.post("/login", async (req, res) => {
   }
 });
 
-//function
+//admin routes
+
+app.get("/admin/users", isAuthenticated, isAdmin, async (req, res) => {
+  const [users] = await pool.query(
+    "SELECT user_id, user_name, password, email, isAdmin FROM user_account"
+  );
+  res.render("admin.ejs", { users });
+});
+
+app.get("/admin/deleteUser/:id", isAuthenticated, isAdmin, async (req, res) => {
+  const userId = req.params.id;
+
+  await pool.query("DELETE FROM user_account WHERE user_id = ?", [userId]);
+
+  res.redirect("/admin/users");
+});
+
+//functions
 function isAuthenticated(req, res, next) {
   if (!req.session.isAuthenticated) {
     res.redirect("/login");
   } else {
     next();
+  }
+}
+
+function isAdmin(req, res, next) {
+  if (req.session.isAuthenticated && req.session.isAdmin === 1) {
+    next();
+  } else {
+    res.redirect("/");
   }
 }
 
@@ -154,7 +185,8 @@ app.post("/updateProfile", isAuthenticated, async (req, res) => {
   let newLastName = req.body.newLastName;
   let newPfpUrl = req.body.newPfpUrl;
   let sex = req.body.sex;
-  let sql = "UPDATE user_account SET user_name = ?, email = ?, password = ?, firstName = ?, lastName = ?, pfp_url = ?, sex = ? WHERE user_id = ?";
+  let sql =
+    "UPDATE user_account SET user_name = ?, email = ?, password = ?, firstName = ?, lastName = ?, pfp_url = ?, sex = ? WHERE user_id = ?";
   let sqlParams = [
     newUsername,
     newEmail,
@@ -358,6 +390,36 @@ app.get("/collections", isAuthenticated, async (req, res) => {
   res.render("collections.ejs", { collections });
 });
 
+// Delete Collection
+app.get("/deleteCollection/:id", isAuthenticated, async (req, res) => {
+  const collectionId = req.params.id;
+  const userId = req.session.user_id;
+
+  const sql = `
+    DELETE FROM collection
+    WHERE collection_id = ? AND user_id = ?
+  `;
+
+  await pool.query(sql, [collectionId, userId]);
+
+  res.redirect("/collections");
+});
+
+// Delete comic from a collection
+app.get(
+  "/deleteCollectionItem/:collectionId/:comicId",
+  isAuthenticated,
+  async (req, res) => {
+    const { collectionId, comicId } = req.params;
+
+    const sql =
+      "DELETE FROM collection_comic WHERE collection_id = ? AND comic_id = ?";
+    await pool.query(sql, [collectionId, comicId]);
+
+    res.redirect(`/collection/${collectionId}`);
+  }
+);
+
 app.post("/collection/select", (req, res) => {
   const { collection_id } = req.body;
 
@@ -376,9 +438,40 @@ app.get("/collection/:id", async (req, res) => {
     WHERE collection_comic.collection_id = ?
   `;
 
+  // Get collection name
+  const [collectionRows] = await pool.query(
+    "SELECT name FROM collection WHERE collection_id = ?",
+    [collection_id]
+  );
+
+  const collectionName = collectionRows.length
+    ? collectionRows[0].name
+    : "Your Collection";
+
   const [comics] = await pool.query(sql, [collection_id]);
 
-  res.render("collectionView.ejs", { comics });
+  res.render("collectionView.ejs", { comics, collection_id, collectionName });
+});
+
+//  checks if email and or username are taken
+app.get("/api/isUsernameOrEmailDuplicate", async (req, res) => {
+  //  username check
+  const { username } = req.query;
+  let isUsernameDuplicate = false;
+  let usernameSql = `select * from user_account where user_name = ?`;
+  const [usernameUsers] = await pool.query(usernameSql, [username]);
+  if (usernameUsers.length > 0) {
+    isUsernameDuplicate = true;
+  }
+  //  email check
+  const { email } = req.query;
+  let isEmailDuplicate = false;
+  let emailSql = `select * from user_account where email = ?`;
+  const [emailUsers] = await pool.query(emailSql, [email]);
+  if (emailUsers.length > 0) {
+    isEmailDuplicate = true;
+  }
+  res.json({ isUsernameDuplicate, isEmailDuplicate });
 });
 
 app.listen(3000, () => {

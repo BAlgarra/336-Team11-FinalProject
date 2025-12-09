@@ -85,29 +85,6 @@ app.post("/signUp", async (req, res) => {
   res.redirect("/login");
 });
 
-//Duplicate Email or username route
-app.get("/api/isUsernameOrEmailDuplicate", async (req, res) => {
-  //  username check
-  const { username } = req.query;
-  let isUsernameDuplicate = false;
-  let usernameSql = `select * 
-                      from user_account 
-                      where user_name = '${username}'`;
-  const [usernameUsers] = await pool.query(usernameSql);
-  if (usernameUsers.length > 0) {
-    isUsernameDuplicate = true;
-  }
-  //  email check
-  const { email } = req.query;
-  let isEmailDuplicate = false;
-  let emailSql = `select * from user_account where email = '${email}'`;
-  const [emailUsers] = await pool.query(emailSql);
-  if (emailUsers.length > 0) {
-    isEmailDuplicate = true;
-  }
-  res.json({ isUsernameDuplicate, isEmailDuplicate });
-});
-
 //loging Get
 app.get("/login", (req, res) => {
   res.render("login.ejs");
@@ -474,6 +451,27 @@ app.get("/collection/:id", async (req, res) => {
   const [comics] = await pool.query(sql, [collection_id]);
 
   res.render("collectionView.ejs", { comics, collection_id, collectionName });
+});
+
+//  checks if email and or username are taken
+app.get("/api/isUsernameOrEmailDuplicate", async (req, res) => {
+  //  username check
+  const { username } = req.query;
+  let isUsernameDuplicate = false;
+  let usernameSql = `select * from user_account where user_name = '${username}'`;
+  const [usernameUsers] = await pool.query(usernameSql);
+  if (usernameUsers.length > 0) {
+    isUsernameDuplicate = true;
+  }
+  //  email check
+  const { email } = req.query;
+  let isEmailDuplicate = false;
+  let emailSql = `select * from user_account where email = '${email}'`;
+  const [emailUsers] = await pool.query(emailSql);
+  if (emailUsers.length > 0) {
+    isEmailDuplicate = true;
+  }
+  res.json({ isUsernameDuplicate, isEmailDuplicate });
 });
 
 app.listen(3000, () => {
